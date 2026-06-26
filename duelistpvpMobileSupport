@@ -667,6 +667,44 @@ Rs.RenderStepped:Connect(function()
     fovdraw.Color = config.fov_color
 end)
 
+--mobile fov
+
+local rs = game:GetService("RunService")
+local lplr = game.Players.LocalPlayer
+local lcamera = workspace.CurrentCamera
+
+local fovGui = Instance.new("ScreenGui")
+fovGui.Name = "MobileFOV_System"
+fovGui.ResetOnSpawn = false
+fovGui.Parent = lplr:WaitForChild("PlayerGui")
+
+local fovCircle = Instance.new("Frame")
+fovCircle.Name = "FOVCircle"
+fovCircle.AnchorPoint = Vector2.new(0.5, 0.5)
+fovCircle.BackgroundTransparency = 1
+fovCircle.Visible = false
+fovCircle.Parent = fovGui
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(1, 0)
+uiCorner.Parent = fovCircle
+
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Thickness = 1.5 -- Độ dày nét vẽ
+uiStroke.Color = config.fov_color
+uiStroke.Parent = fovCircle
+
+rs.RenderStepped:Connect(function()
+    fovCircle.Visible = config.fov_visible
+    if config.fov_visible then
+        fovCircle.Position = UDim2.new(0, lcamera.ViewportSize.X / 2, 0, lcamera.ViewportSize.Y / 2)
+    
+        fovCircle.Size = UDim2.new(0, config.fov_radius * 2, 0, config.fov_radius * 2)
+        uiStroke.Color = config.fov_color
+    end
+end)
+
+
 Uis.InputBegan:Connect(function(input)
         if not Uis.TouchEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2 then
             config.Aiming = true
@@ -680,44 +718,34 @@ Uis.InputEnded:Connect(function(input)
 end)
 
 if Uis.TouchEnabled and not Uis.KeyboardEnabled then
+
     local ShootButton = lplr.PlayerGui:WaitForChild("Mobile"):WaitForChild("Shoot")
     local AimButton = lplr.PlayerGui:WaitForChild("Mobile"):WaitForChild("Aim")
 
     ShootButton.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType.MouseButton1 then
-            config.Aimbot = true
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            config.Aiming = true
         end
-    
-
     end)
 
-     ShootButton.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType.MouseButton1 then
-            config.Aimbot = false
+    ShootButton.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            config.Aiming = false
         end
-    
-
     end)
 
-   AimButton.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType.MouseButton1 then
-            config.Aimbot = true
+    AimButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            config.Aiming = true
         end
-    
-
     end)
-
-   AimButton.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType.MouseButton1 then
-            config.Aimbot = false
+    AimButton.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            config.Aiming = false
         end
-    
-
     end)
-
 
 end
-
 
 local Workspace = game:GetService("Workspace")
 local function IsVisible(targetPart)
@@ -763,7 +791,7 @@ Rs.RenderStepped:Connect(function()
 
                                                 local mag = (Vector2.new(lcamera.ViewportSize.X /2, lcamera.ViewportSize.Y / 2) - Vector2.new(TargetPartPos.X, TargetPartPos.Y)).Magnitude
 
-                                                if mag < distance and mag < config.fov_radius then
+                                                if mag < distance and mag < config.fov_radius  then
                                                     distance = mag
                                                     closetChar = char
                                                 end
