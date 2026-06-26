@@ -222,19 +222,25 @@ end)
 
 local rs = game:GetService("RunService")
 local lplr = game.Players.LocalPlayer
-local lcamera = workspace.CurrentCamera
+
 
 local fovGui = Instance.new("ScreenGui")
 fovGui.Name = "MobileFOV_System"
 fovGui.ResetOnSpawn = false
+fovGui.IgnoreGuiInset = true
 fovGui.Parent = lplr:WaitForChild("PlayerGui")
 
+-- 2. Tạo khung làm tâm FOV
 local fovCircle = Instance.new("Frame")
 fovCircle.Name = "FOVCircle"
 fovCircle.AnchorPoint = Vector2.new(0.5, 0.5)
 fovCircle.BackgroundTransparency = 1
 fovCircle.Visible = false
+
+
+fovCircle.Position = UDim2.new(0.5, 0, 0.5, 0) 
 fovCircle.Parent = fovGui
+
 
 local uiCorner = Instance.new("UICorner")
 uiCorner.CornerRadius = UDim.new(1, 0)
@@ -245,11 +251,10 @@ uiStroke.Thickness = 1
 uiStroke.Color = config.fov_color
 uiStroke.Parent = fovCircle
 
+
 rs.RenderStepped:Connect(function()
     fovCircle.Visible = config.fov_visible
     if config.fov_visible then
-        fovCircle.Position = UDim2.new(0, lcamera.ViewportSize.X / 2, 0, lcamera.ViewportSize.Y / 2)
-    
         fovCircle.Size = UDim2.new(0, config.fov_radius * 2, 0, config.fov_radius * 2)
         uiStroke.Color = config.fov_color
     end
