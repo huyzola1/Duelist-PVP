@@ -1,57 +1,23 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-local Window = Rayfield:CreateWindow({
-   Name = "hihiHub | DuelistPVP",
-   Icon = "crosshair", -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-   LoadingTitle = "hihiHub | subtoCheeseBurger",
-   LoadingSubtitle = "by HUYAHIHI",
-   ShowText = "HELLO USER", -- for mobile users to unhide Rayfield, change if you'd like
-   Theme = "AmberGlow", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+local UILib = loadstring(game:HttpGet('https://raw.githubusercontent.com/huyzola1/hihi-Ui-librabry/main/source.lua'))()
 
-   ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
-
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false, -- Prevents Rayfield from emitting warnings when the script has a version mismatch with the interface.
-
-   -- ScriptID = "sid_xxxxxxxxxxxx", -- Your Script ID from developer.sirius.menu — enables analytics, managed keys, and script hosting
-
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = nil, -- Create a custom folder for your hub/game
-      FileName = "Big Hub"
-   },
-
-   Discord = {
-      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
-      Invite = "noinvitelink", -- The Discord invite code, do not include Discord.gg/. E.g. Discord.gg/ABCD would be ABCD
-      RememberJoins = true -- Set this to false to make them join the Discord every time they load it up
-   },
-
-   KeySystem = true, -- Set this to true to use our key system
-   KeySettings = {
-      Title = "KEY",
-      Subtitle = "you need key to use this!>><<",
-      Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
-      FileName = "Key", -- It is recommended to use something unique, as other scripts using Rayfield may overwrite your key file
-      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"HUYPHAM"} -- List of keys that the system will alcameraept, can be RAW file links (pastebin, github, etc.) or simple strings ("hello", "key22")
-   }
-})
+local Window = UILib:CreateWindow({
+			Name = "HiHiHub | Duelist PVP",
+			SubTitle = "by HuyHIHI",
+			Keybind = Enum.KeyCode.RightControl
+		})
 
 local Aim = Window:CreateTab("AIM", 4483362458)
 local Visual = Window:CreateTab("VISUAL", 4483362458)
 local Etc = Window:CreateTab("ETC",4483362458)
 
+
+
 local rs = game:GetService("RunService")
 local plrs = game:GetService("Players")
 local lplr = plrs.LocalPlayer
 local lcamera = workspace.CurrentCamera
-Rayfield:Notify({
-   Title = "!!!!!!!!!!",
-   Content = "Sub to CheeseBurger",
-   Duration = 6.5,
-   Image = "rewind",
-})
+
+
 
 local function GetHRP()
     local char = lplr.Character or lplr.CharacterAdded:Wait()
@@ -162,6 +128,7 @@ rs.RenderStepped:Connect(function()
                 if enemychar and enemyhum and enemyhum.Health > 0 and enemyhrp and config.Esp == true  then 
                
                     local hrpPos, onscreen = lcamera:WorldToViewportPoint(enemyhrp.Position)
+                    local headPos = lcamera:WorldToViewportPoint(enemyhead.Position)
                     local TopPos = lcamera:WorldToViewportPoint(enemyhrp.Position + Vector3.new(0,3,0))
                     local BotPos = lcamera:WorldToViewportPoint(enemyhrp.Position - Vector3.new(0,3,0))
 
@@ -190,8 +157,8 @@ rs.RenderStepped:Connect(function()
                         end
 
                         if config.Tracer == true then
-                                esptab.Tracer.From = Vector2.new(lcamera.ViewportSize.X / 2, lcamera.ViewportSize.Y / 2)
-                                esptab.Tracer.To = Vector2.new(hrpPos.X, hrpPos.Y)
+                                esptab.Tracer.From = Vector2.new(lcamera.ViewportSize.X / 2, 0)
+                                esptab.Tracer.To = Vector2.new(headPos.X, headPos.Y)
                                 esptab.Tracer.Color = config.EspColor
                                 esptab.Tracer.Visible = true
                                 
@@ -330,78 +297,72 @@ Rs.RenderStepped:Connect(function()
 end)
 
 
-local Aimbot = Aim:CreateToggle({
-   Name = "Aimbot",
-   CurrentValue = false,
-   Flag = "Toggle2",
-   Callback = function(Value)
-        config.Aimbot = Value
-   end,
+local AimBot = Aim:CreateToggle({
+	Name = "Aimbot",
+	CurrentValue = false,
+	Callback = function(state)
+        config.Aimbot = state
+	end
 })
 
 
 
-local SelectAimPart = Aim:CreateDropdown({
-   Name = "Select Aim Part",
-   Options = {"Head", "HumanoidRootPart"},
-   CurrentOption = {"Head"},
-   MultipleOptions = false,
-   Flag = "SelectAimPart",
-   Callback = function(Options)
-        config.AimPart = Options[1]
-    end
-})
-
-local FovToggle = Aim:CreateToggle({
-    Name = "Show FOV",
-    CurrentValue = false,
-    Callback = function(Value)
-        config.fov_visible = Value
-        fovdraw.Visible = Value
-    end
+local SelectAimPart  = Aim:CreateDropdown({
+			Name = "Aim Part",
+			Options = {"Head","HumanoidRootPart"},
+			CurrentOption = "Head",
+			Callback = function(option)
+			config.AimPart = option
+			end
 })
 
 
+local VisibleFOV = Aim:CreateToggle({
+	Name = "Show FOV",
+	CurrentValue = false,
+	Callback = function(state)
+      config.fov_visible = state
+        fovdraw.Visible = state
+	end
+})
 
-local IngoreWall = Aim:CreateToggle({
-    Name = "Ingore Wall",
-    CurrentValue = false,
-    Callback = function(Value)
-        config.IgnoreWall = Value
-    end
+local IgnoreWall = Aim:CreateToggle({
+	Name = "Ignore Wall",
+	CurrentValue = false,
+	Callback = function(state)
+        config.IgnoreWall = state
+	end
 })
 
 
-local FovColor = Aim:CreateColorPicker({
-    Name = "Fov Color",
-    Color = Color3.fromRGB(255, 1, 192),
-    Flag = "FovColor", 
-    Callback = function(Value)
-        config.fov_color = Value
-    end
+
+local FovColor  = Aim:CreateColorPicker({
+			Name = "Fov Color",
+			DefaultColor = Color3.fromRGB(45, 212, 191),
+			Callback = function(color)
+			    config.fov_color = color
+			end
 })
 
 local FovSize = Aim:CreateSlider({
-   Name = "Fov Size",
-   Range = {30, 250},
-   Increment = 10,
-   Suffix = "Size",
-   CurrentValue = 30,
-   Flag = "FovSize",
-   Callback = function(Value)
-        config.fov_radius = Value
-   end,
-})
+			Name = "Fov Size",
+			Range = {50, 250},
+			Increment = 1,
+			CurrentValue = 50,
+			Callback = function(value)
+				config.fov_radius = value
+			end
+		})
 
 
 ---ESP BUTTONSS
 
+
 local EspTog = Visual:CreateToggle({
-   Name = "Esp",
-   CurrentValue = false,
-   Flag = "EspTog",
-   Callback = function(Value)
-        config.Esp = Value
+	Name = "Esp",
+	CurrentValue = false,
+	Callback = function(state)
+         config.Esp = state
         for i, v in pairs(plrs:GetPlayers()) do
             if config.Esp == true then
                     CreatEsp(v)
@@ -409,55 +370,53 @@ local EspTog = Visual:CreateToggle({
                     RemoveEsp(v)
             end
         end
-   end,
+	end
 })
+
 
 
 
 local TracerToggle = Visual:CreateToggle({
     Name = "Tracer",
     CurrentValue = false,
-    Callback = function(Value)
-        config.Tracer = Value
+    Callback = function(state)
+        config.Tracer = state
     end
 })
+
+
 
 local NameEspTog = Visual:CreateToggle({
    Name = "Name Esp",
    CurrentValue = false,
-   Flag = "NameEspTog",
-   Callback = function(Value)
-        config.NameEsp = Value
+   Callback = function(state)
+        config.NameEsp = state
    end,
 })
 
 local HealthEspTog = Visual:CreateToggle({
    Name = "Health Esp",
    CurrentValue = false,
-   Flag = "HealthEspTog",
-   Callback = function(Value)
-        config.HealthEsp = Value
+   Callback = function(state)
+        config.HealthEsp = state
    end,
 })
 
-local EspColor = Visual:CreateColorPicker({
-    Name = "Esp Color",
-    Color = Color3.fromRGB(255, 0, 0),
-    Flag = "EspColor",
-    Callback = function(Value)
-        config.EspColor = Value
-    end
+local EspColor  = Aim:CreateColorPicker({
+			Name = "Esp Color",
+			DefaultColor = Color3.fromRGB(45, 212, 191),
+			Callback = function(color)
+			    config.EspColor = color
+			end
 })
-
 
 
 
 local Rgb = Visual:CreateToggle({
    Name = "Rgb Mode",
    CurrentValue = false,
-   Flag = "RgbMode",
-   Callback = function(Value)
-    config.rgbMode = Value
+   Callback = function(state)
+    config.rgbMode = state
    end,
 })
 
@@ -472,8 +431,7 @@ end)
 
 local fps = Etc:CreateButton({
     Name = "fps",
-    Flag = "fpsplus",
-    Callback = function(Value)
+    Callback = function(state)
         for a, v in pairs(game.Workspace:GetDescendants()) do
             if v:IsA("BasePart") then
                 v.Material = Enum.Material.SmoothPlastic
@@ -481,5 +439,3 @@ local fps = Etc:CreateButton({
         end
     end
 })
-
-Rayfield:LoadConfiguration()
