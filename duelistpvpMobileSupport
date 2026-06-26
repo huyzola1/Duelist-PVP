@@ -683,22 +683,37 @@ if Uis.TouchEnabled and not Uis.KeyboardEnabled then
     local ShootButton = lplr.PlayerGui:WaitForChild("Mobile"):WaitForChild("Shoot")
     local AimButton = lplr.PlayerGui:WaitForChild("Mobile"):WaitForChild("Aim")
 
-    ShootButton.MouseEnter:Connect(function()
-        config.Aimbot = true
+    ShootButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType.MouseButton1 then
+            config.Aimbot = true
+        end
+    
+
     end)
 
-    ShootButton.MouseLeave:Connect(function()
-        config.Aimbot = false
+     ShootButton.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType.MouseButton1 then
+            config.Aimbot = false
+        end
+    
+
     end)
 
-    AimButton.MouseEnter:Connect(function()
-        config.Aimbot = true
+   AimButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType.MouseButton1 then
+            config.Aimbot = true
+        end
+    
+
     end)
 
-    AimButton.MouseLeave:Connect(function()
-        config.Aimbot = false
-    end)
+   AimButton.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType.MouseButton1 then
+            config.Aimbot = false
+        end
+    
 
+    end)
 
 
 end
